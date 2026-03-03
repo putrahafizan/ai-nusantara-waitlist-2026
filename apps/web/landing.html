@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI NUSANTARA - Asisten Penelitian Akademik untuk Dosen & Mahasiswa Indonesia</title>
+    <meta name="description" content="Platform AI untuk membantu dosen dan mahasiswa Indonesia dalam literature review, sitasi otomatis, dan writing assistant akademik.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary: #0f172a;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray-700);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 160px 0 100px;
+            background: linear-gradient(180deg, var(--gray-50) 0%, white 100%);
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            color: var(--gray-900);
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--gray-600);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: var(--gray-600);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--gray-900);
+        }
+
+        .section-header p {
+            font-size: 18px;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .feature-card {
+            padding: 40px;
+            border-radius: 16px;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 24px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--gray-900);
+        }
+
+        .feature-card p {
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        .feature-value {
+            margin-top: 20px;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+        }
+
+        .feature-value p {
+            font-weight: 600;
+            color: var(--gray-800);
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* For Who Section */
+        .for-who {
+            padding: 100px 0;
+            background: var(--gray-50);
+        }
+
+        .for-who-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .for-who-card {
+            background: white;
+            padding: 48px;
+            border-radius: 16px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .for-who-card h3 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--gray-900);
+        }
+
+        .for-who-card p {
+            color: var(--gray-600);
+            margin-bottom: 24px;
+        }
+
+        .pain-points {
+            list-style: none;
+        }
+
+        .pain-points li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-700);
+            display: flex;
+            align-items: start;
+            gap: 12px;
+        }
+
+        .pain-points li:before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 60px;
+        }
+
+        .pricing-card {
+            padding: 40px;
+            border-radius: 16px;
+            border: 2px solid var(--gray-200);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .pricing-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.15);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .pricing-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--gray-900);
+        }
+
+        .pricing-card .price {
+            font-size: 42px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .pricing-card .price span {
+            font-size: 16px;
+            color: var(--gray-600);
+            font-weight: 500;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 24px 0;
+        }
+
+        .pricing-features li {
+            padding: 8px 0;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pricing-features li:before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .pricing-features li.disabled {
+            color: var(--gray-400);
+        }
+
+        .pricing-features li.disabled:before {
+            content: "✗";
+            color: var(--gray-400);
+        }
+
+        /* Waitlist Section */
+        .waitlist {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            text-align: center;
+        }
+
+        .waitlist h2 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .waitlist p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .waitlist-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            gap: 12px;
+        }
+
+        .waitlist-form input {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .waitlist-form button {
+            background: var(--success);
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .waitlist-form button:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .waitlist-success {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 24px;
+            border-radius: 8px;
+            margin-top: 24px;
+        }
+
+        .waitlist-success.show {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--gray-900);
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .footer-logo span {
+            color: var(--accent);
+        }
+
+        .footer-desc {
+            color: var(--gray-300);
+            line-height: 1.6;
+        }
+
+        .footer-links h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--gray-300);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid var(--gray-700);
+            color: var(--gray-400);
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 32px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .for-who-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: none;
+            }
+
+            .waitlist-form {
+                flex-direction: column;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">
+                    <div class="logo-icon">AI</div>
+                    NUSANTARA
+                </a>
+                <div class="nav-links">
+                    <a href="#features">Fitur</a>
+                    <a href="#pricing">Harga</a>
+                    <a href="#waitlist" class="btn-primary">Daftar Waitlist</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Asisten Penelitian Akademik<br>untuk <span>Dosen & Mahasiswa</span> Indonesia</h1>
+            <p>Platform AI untuk membantu literature review, sitasi otomatis, dan writing assistant. Hemat 10+ jam per minggu dengan bantuan AI.</p>
+            <div class="hero-cta">
+                <a href="#waitlist" class="btn-primary">Daftar Waitlist Gratis</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-value">500K+</div>
+                    <div class="stat-label">Dosen di Indonesia</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">8M+</div>
+                    <div class="stat-label">Mahasiswa Aktif</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">10+ Jam</div>
+                    <div class="stat-label">Tersimpan Per Minggu</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Fitur Utama</h2>
+                <p>Alat AI yang dirancang khusus untuk kebutuhan akademik Indonesia</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔬</div>
+                    <h3>Literature Review Assistant</h3>
+                    <p>Upload PDF paper → AI extract key findings, methodology, dan research gaps secara otomatis.</p>
+                    <div class="feature-value">
+                        <p>💡 "Baca 50 paper dalam 1 jam, bukan 10 jam"</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3>Citation Generator</h3>
+                    <p>Generate sitasi otomatis dari URL/PDF. Support APA, MLA, Chicago, IEEE + standar SINTA Indonesia.</p>
+                    <div class="feature-value">
+                        <p>💡 "Tidak pernah kehilangan poin karena format salah"</p>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✍️</div>
+                    <h3>Academic Writing Assistant</h3>
+                    <p>AI writing coach untuk paper, thesis, dan disertasi. Grammar & style check Bahasa Indonesia + English.</p>
+                    <div class="feature-value">
+                        <p>💡 "Tingkatkan kualitas tulisan akademik Anda"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Who Section -->
+    <section class="for-who">
+        <div class="container">
+            <div class="section-header">
+                <h2>Untuk Siapa?</h2>
+                <p>Dirancang khusus untuk ekosistem akademik Indonesia</p>
+            </div>
+            <div class="for-who-grid">
+                <div class="for-who-card">
+                    <h3>👨‍🏫 Untuk Dosen</h3>
+                    <p>Pressure untuk publish ("publish or perish"), waktu terbatas, dan perlu stay kompetitif.</p>
+                    <ul class="pain-points">
+                        <li>Literature review memakan waktu 10+ jam per minggu</li>
+                        <li>Struggle dengan academic English writing</li>
+                        <li>Formatting sitasi yang tedious dan error-prone</li>
+                        <li>Kesulitan track latest research di bidangnya</li>
+                        <li>Analisis data statistik yang kompleks</li>
+                    </ul>
+                </div>
+                <div class="for-who-card">
+                    <h3>👨‍🎓 Untuk Mahasiswa</h3>
+                    <p>Thesis writing overwhelming, susah paham paper English, takut plagiarism.</p>
+                    <ul class="pain-points">
+                        <li>Tidak tahu harus mulai dari mana untuk thesis</li>
+                        <li> Kesulitan memahami academic papers bahasa Inggris</li>
+                        <li>Khawatir tentang plagiarism tidak sengaja</li>
+                        <li>Kesulitan mencari referensi yang relevan</li>
+                        <li>Tidak ada sistem knowledge management yang baik</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Harga</h2>
+                <p>Mulai gratis, upgrade sesuai kebutuhan</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Free Tier</h3>
+                    <div class="price">Rp 0<span>/bulan</span></div>
+                    <ul class="pricing-features">
+                        <li>10 literature reviews/bulan</li>
+                        <li>Basic writing assistant</li>
+                        <li>500 sitasi/bulan</li>
+                        <li class="disabled">Advanced AI features</li>
+                        <li class="disabled">Plagiarism checker</li>
+                        <li class="disabled">Priority support</li>
+                    </ul>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">POPULAR</div>
+                    <h3>Pro Plan</h3>
+                    <div class="price">Rp 200K<span>/bulan</span></div>
+                    <ul class="pricing-features">
+                        <li>Unlimited literature reviews</li>
+                        <li>Advanced writing assistant</li>
+                        <li>Unlimited citations</li>
+                        <li>Plagiarism checker</li>
+                        <li class="disabled">Custom AI training</li>
+                        <li>Priority support</li>
+                    </ul>
+                </div>
+                <div class="pricing-card">
+                    <h3>Researcher Plan</h3>
+                    <div class="price">Rp 500K<span>/bulan</span></div>
+                    <ul class="pricing-features">
+                        <li>Semua fitur Pro</li>
+                        <li>Custom AI training</li>
+                        <li>Data analysis assistant</li>
+                        <li>Collaboration tools</li>
+                        <li>API access</li>
+                        <li>Priority support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist Section -->
+    <section class="waitlist" id="waitlist">
+        <div class="container">
+            <h2>Siap Meningkatkan Produktivitas Akademik Anda?</h2>
+            <p>Bergabunglah dengan waitlist kami dan dapatkan akses early bird dengan diskon 50% untuk 100 pendaftar pertama.</p>
+            <form class="waitlist-form" id="waitlistForm">
+                <input type="email" placeholder="Alamat email Anda" required id="emailInput">
+                <button type="submit">Gabung Waitlist</button>
+            </form>
+            <div class="waitlist-success" id="waitlistSuccess">
+                <h3>🎉 Terima kasih telah bergabung!</h3>
+                <p>Kami akan menghubungi Anda segera ketika platform siap.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">AI <span>NUSANTARA</span></div>
+                    <p class="footer-desc">Platform AI untuk membantu dosen dan mahasiswa Indonesia dalam research dan writing akademik.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Produk</h4>
+                    <ul>
+                        <li><a href="#features">Fitur</a></li>
+                        <li><a href="#pricing">Harga</a></li>
+                        <li><a href="#">Roadmap</a></li>
+                        <li><a href="#">Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Perusahaan</h4>
+                    <ul>
+                        <li><a href="#">Tentang Kami</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Karir</a></li>
+                        <li><a href="#">Kontak</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Academic Integrity</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 AI NUSANTARA. All rights reserved. Built with ❤️ for Indonesian academia.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // API Configuration
+        const API_URL = 'http://localhost:3001/api/waitlist'; // Change this to your deployed API URL
+
+        // Waitlist form handling
+        document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const emailInput = document.getElementById('emailInput');
+            const email = emailInput.value.trim();
+            const submitBtn = this.querySelector('button[type="submit"]');
+
+            // Basic validation
+            if (!email || !email.includes('@')) {
+                alert('Mohon masukkan alamat email yang valid.');
+                return;
+            }
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Memproses...';
+
+            try {
+                // Call API
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        source: 'landing-page',
+                        userAgent: navigator.userAgent
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Success!
+                    console.log('✅ Email submitted successfully:', data);
+
+                    // Show success message
+                    document.getElementById('waitlistForm').style.display = 'none';
+                    document.getElementById('waitlistSuccess').classList.add('show');
+
+                    // Store in localStorage as backup
+                    let waitlist = JSON.parse(localStorage.getItem('waitlist') || '[]');
+                    waitlist.push({
+                        email: email,
+                        date: new Date().toISOString(),
+                        status: 'submitted'
+                    });
+                    localStorage.setItem('waitlist', JSON.stringify(waitlist));
+
+                    // Track event (optional - add your analytics here)
+                    trackEvent('waitlist_signup', {
+                        email: email,
+                        timestamp: new Date().toISOString()
+                    });
+
+                } else {
+                    // Handle API errors
+                    console.error('❌ API Error:', data);
+
+                    if (data.code === 'EMAIL_EXISTS') {
+                        alert(data.message || 'Email Anda sudah terdaftar di waitlist kami. Terima kasih!');
+                        // Still show success since they're already on the list
+                        document.getElementById('waitlistForm').style.display = 'none';
+                        document.getElementById('waitlistSuccess').classList.add('show');
+                    } else {
+                        alert(data.error || 'Terjadi kesalahan. Mohon coba lagi.');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Gabung Waitlist';
+                    }
+                }
+
+            } catch (error) {
+                // Handle network errors
+                console.error('❌ Network Error:', error);
+
+                // Fallback to localStorage if API fails
+                console.log('⚠️  Using localStorage fallback');
+
+                let waitlist = JSON.parse(localStorage.getItem('waitlist') || '[]');
+                waitlist.push({
+                    email: email,
+                    date: new Date().toISOString(),
+                    status: 'pending-sync'
+                });
+                localStorage.setItem('waitlist', JSON.stringify(waitlist));
+
+                alert('Terima kasih! Email Anda telah terdaftar (offline mode).');
+                document.getElementById('waitlistForm').style.display = 'none';
+                document.getElementById('waitlistSuccess').classList.add('show');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Analytics tracking (demo)
+        function trackEvent(event, data) {
+            console.log('Event:', event, data);
+            // In production, send to Google Analytics, PostHog, etc.
+        }
+
+        // Track page view
+        trackEvent('pageview', {
+            page: 'landing',
+            timestamp: new Date().toISOString()
+        });
+    </script>
+</body>
+</html>
