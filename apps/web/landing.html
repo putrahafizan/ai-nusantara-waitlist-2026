@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -801,8 +802,12 @@
     </footer>
 
     <script>
-        // API Configuration
-        const API_URL = 'http://localhost:3001/api/waitlist'; // Change this to your deployed API URL
+        // Supabase Configuration (Direct connection - no backend needed!)
+        const SUPABASE_URL = 'https://ksvlsiiyhdktdushpdmr.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzdmxzaWl5aGRrdGR1c2hwZG1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg5NjYzNzQsImV4cCI6MjA1NDU0MjM3NH0.kcKqtMHxOKBBqM5h2PZ3AxFqJbKX2NPKEB0JQJ2FPXQ';
+
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Waitlist form handling
         document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
@@ -823,20 +828,19 @@
             submitBtn.textContent = 'Memproses...';
 
             try {
-                // Call API
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        source: 'landing-page',
-                        userAgent: navigator.userAgent
-                    })
-                });
+                // Direct insert to Supabase (no backend needed!)
+                const { data, error } = await supabase
+                    .from('waitlist')
+                    .insert([
+                        {
+                            email: email,
+                            source: 'landing-page',
+                            user_agent: navigator.userAgent,
+                            created_at: new Date().toISOString()
+                        }
+                    ]);
 
-                const data = await response.json();
+                if (error) throw error;
 
                 if (response.ok) {
                     // Success!
